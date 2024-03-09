@@ -2,11 +2,10 @@ WITH user_freq AS (
 	SELECT
 		users.user_id,
 		COUNT (DISTINCT order_date) AS freq
-	FROM orders
-	JOIN users ON  orders.user_id = users.user_id
-	WHERE orders.is_canceled = 0
+	FROM users
+	LEFT JOIN orders ON  users.user_id = orders.user_id
+	WHERE orders.is_canceled = 0 OR orders.is_canceled IS NULL
 	AND users.is_deleted = 0
-	AND orders.order_date BETWEEN '2022-01-01' AND '2022-12-31'
 	GROUP BY users.user_id
 )
 
