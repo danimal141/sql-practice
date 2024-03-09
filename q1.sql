@@ -1,0 +1,1 @@
+SELECT gender, COUNT(*)  FROM users  WHERE NOT is_deleted = 1 GROUP BY gender;
