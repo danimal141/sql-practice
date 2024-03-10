@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?><sqlb_project><db path="/Users/danimal141/Documents/dev/sql-practice/test.db" readonly="0" foreign_keys="1" case_sensitive_like="0" temp_store="0" wal_autocheckpoint="1000" synchronous="2"/><attached/><window><main_tabs open="structure browser pragmas query" current="1"/></window><tab_structure><column_width id="0" width="300"/><column_width id="1" width="0"/><column_width id="2" width="100"/><column_width id="3" width="772"/><column_width id="4" width="0"/><expanded_item id="0" parent="1"/><expanded_item id="1" parent="1"/><expanded_item id="2" parent="1"/><expanded_item id="3" parent="1"/></tab_structure><tab_browse><current_table name="4,8:mainproducts"/><default_encoding codec=""/><browse_table_settings><table schema="main" name="orders" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort><column index="1" mode="0"/></sort><column_widths><column index="1" value="58"/><column index="2" value="47"/><column index="3" value="95"/><column index="4" value="72"/><column index="5" value="78"/><column index="6" value="68"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="products" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="65"/><column index="2" value="119"/><column index="3" value="43"/><column index="4" value="86"/><column index="5" value="101"/><column index="6" value="88"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table><table schema="main" name="users" show_row_id="0" encoding="" plot_x_axis="" unlock_view_pk="_rowid_"><sort/><column_widths><column index="1" value="47"/><column index="2" value="45"/><column index="3" value="70"/><column index="4" value="62"/></column_widths><filter_values/><conditional_formats/><row_id_formats/><display_formats/><hidden_columns/><plot_y_axes/><global_filter/></table></browse_table_settings></tab_browse><tab_sql><sql name="q1.sql">SELECT
+	user_id,
+	MAX(order_date) AS last_order_date,
+	COUNT (DISTINCT order_date) AS freq,
+	SUM(price) AS sum_price
+FROM orders
+INNER JOIN products ON orders.order_product_id = products.product_id
+WHERE is_canceled = 0 AND user_id IS NOT NULL
+GROUP BY user_id
+
+</sql><sql name="SQL 2">WITH first_order_products AS (
+	SELECT
+		DISTINCT o.user_id AS user_id,
+		MIN(o.order_date) AS first_order_date,
+		p.product_id AS first_order_product_id,
+		p.medium_category AS m_category,
+		p.small_category AS s_category
+	FROM orders o
+	JOIN products p ON o.order_product_id = p.product_id
+	WHERE is_canceled = 0
+	GROUP BY o.user_id
+)
+
+SELECT
+	fp.m_category,
+	fp.s_category,
+	COUNT(fp.s_category) AS s_count
+FROM first_order_products fp
+GROUP BY fp.m_category
+ORDER BY s_count DESC
+
+
+
+</sql><current_tab id="1"/></tab_sql></sqlb_project>
